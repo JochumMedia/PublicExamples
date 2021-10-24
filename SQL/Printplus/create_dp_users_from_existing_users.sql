@@ -58,3 +58,6 @@ BEGIN
 
 	FETCH NEXT FROM addresses INTO @adintnr
 END
+
+CLOSE addresses
+DEALLOCATE addresses
