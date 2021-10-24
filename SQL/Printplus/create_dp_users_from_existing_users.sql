@@ -46,7 +46,7 @@ BEGIN
 				EXEC GetNewPassword @newpassword = @new_password OUTPUT, @newpasswordmd5 = @new_password_md5 OUTPUT
 
 				INSERT INTO T_DPBENUTZER(benid, beniktschlf, benaktiv, benpasswort, ctimest, timest, csachb, owner, priv, mutcode, bengesperrt, benktid, benwkb, benname, benemail, benfrei, benmodstat, benauarch, benbenvw)
-				VALUES (@next_key_dpbenutzer, @ktschlf, 1, @new_password_md5, @new_pp_timestamp, @new_pp_timestamp, 'JMX', 'JMX', 100, 'U', 0, @next_key_dpkonto, 1, @ktemail, @ktemail, 1, 'K', 1, 2);
+				VALUES (@next_key_dpbenutzer, @ktschlf, 1, @new_password_md5, @new_pp_timestamp, @new_pp_timestamp, 'JMX', 'JMX', 100, 'U', 0, @next_key_dpkonto, 1, @ktemail, @ktemail, 1, 'K', 1, 3);
 
 				UPDATE T_IVI01KTX
 				SET iktcomm2 = @new_password
