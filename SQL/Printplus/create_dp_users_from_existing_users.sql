@@ -1,9 +1,10 @@
+SET NOCOUNT ON
 DECLARE @station_number INT = 500
 DECLARE addresses CURSOR LOCAL FORWARD_ONLY FAST_FORWARD
 FOR
 	SELECT iadintnr
 	FROM T_IVI01ADX
-	WHERE iadintnr NOT IN (SELECT ktiadintnr FROM T_DPKONTO)
+	WHERE iadintnr NOT IN (SELECT ktiadintnr FROM T_DPKONTO) AND deleted = 0  AND inactive = 0
 
 OPEN addresses
 
@@ -28,11 +29,12 @@ BEGIN
 	INSERT INTO T_DPKONTO(ktid, ktiadintnr, ktaktiv, ktanzliz, kttyp, ktpwinit, ctimest, timest, csachb, owner, priv, mutcode, ktuidpruef)
 	VALUES (@next_key_dpkonto, @adintnr, 1, 25, 'B2B', @new_password, @new_pp_timestamp, @new_pp_timestamp, 'JMX', 'JMX', 100, 'U', 1);
 
-	DECLARE contact CURSOR LOCAL FORWARD_ONLY FAST_FORWARD
+	DECLARE contact CURSOR LOCAL KEYSET
 	FOR
 		SELECT iktschlf, iktemail
 		FROM T_IVI01KTX
-		WHERE iktschlf NOT IN (SELECT beniktschlf FROM T_DPBENUTZER) AND iktintnr = @adintnr
+		WHERE iktschlf NOT IN (SELECT beniktschlf FROM T_DPBENUTZER) AND iktemail IS NOT NULL AND iktintnr = @adintnr AND deleted = 0 AND inactive = 0
+		FOR UPDATE OF iktcomm2
 
 		OPEN contact
 			DECLARE @ktschlf INT
@@ -50,7 +52,7 @@ BEGIN
 
 				UPDATE T_IVI01KTX
 				SET iktcomm2 = @new_password
-				WHERE iktschlf = @ktschlf
+				WHERE CURRENT OF contact
 
 				FETCH NEXT FROM contact INTO @ktschlf, @ktemail
 			END
