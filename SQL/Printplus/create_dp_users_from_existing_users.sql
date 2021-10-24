@@ -1,3 +1,4 @@
+DECLARE @station_number INT = 500
 DECLARE addresses CURSOR LOCAL FORWARD_ONLY FAST_FORWARD
 FOR
 	SELECT iadintnr
@@ -21,7 +22,7 @@ FETCH NEXT FROM addresses INTO @adintnr
 
 WHILE @@FETCH_STATUS = 0
 BEGIN
-	EXEC PORTAL.PPGetKeyDPKONTO @@Station = 200, @@count = 1, @@NEXTKEY = @next_key_dpkonto OUTPUT, @@ResultCode = @next_key_dpkonto_result OUTPUT
+	EXEC PORTAL.PPGetKeyDPKONTO @@Station = @station_number, @@count = 1, @@NEXTKEY = @next_key_dpkonto OUTPUT, @@ResultCode = @next_key_dpkonto_result OUTPUT
 	EXEC GetNewPassword @newpassword = @new_password OUTPUT, @newpasswordmd5 = @new_password_md5 OUTPUT
 
 	INSERT INTO T_DPKONTO(ktid, ktiadintnr, ktaktiv, ktanzliz, kttyp, ktpwinit, ctimest, timest, csachb, owner, priv, mutcode, ktuidpruef)
@@ -41,7 +42,7 @@ BEGIN
 
 			WHILE @@FETCH_STATUS = 0
 			BEGIN
-				EXEC PORTAL.PPGetKeyDPBENUTZER @@Station = 200, @@count = 1, @@NEXTKEY = @next_key_dpbenutzer OUTPUT, @@ResultCode = @next_key_dpbenutzer_result OUTPUT
+				EXEC PORTAL.PPGetKeyDPBENUTZER @@Station = @station_number, @@count = 1, @@NEXTKEY = @next_key_dpbenutzer OUTPUT, @@ResultCode = @next_key_dpbenutzer_result OUTPUT
 				EXEC GetNewPassword @newpassword = @new_password OUTPUT, @newpasswordmd5 = @new_password_md5 OUTPUT
 
 				INSERT INTO T_DPBENUTZER(benid, beniktschlf, benaktiv, benpasswort, ctimest, timest, csachb, owner, priv, mutcode, bengesperrt, benktid, benwkb, benname, benemail, benfrei, benmodstat, benauarch, benbenvw)
